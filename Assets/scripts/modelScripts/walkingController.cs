@@ -11,14 +11,31 @@ public enum FacingDirection {
 
 public class walkingController : Controller
 {
+    // movement information
     Vector3 walkVelocity;
     Vector3 prevWalkVelocity;
-    FacingDirection facing;
+    FacingDirection facing = FacingDirection.East;
     float adjVerVelocity;
     float jumpPressTime;
 
+    // settings
     public float walkSpeed = 2.5f;
     public float jumpSpeed = 5f;
+    public float interactDuration = 0.1f;
+    public float attackDamage = 5f;
+
+    // delegates and events
+    public delegate void FacingChangeHandler(FacingDirection fd);
+    public static event FacingChangeHandler OnFacingChange;
+    public delegate void HitboxEventHandler(float dur, float secondary);
+    public static event HitboxEventHandler OnInteract;
+
+    private void Start()
+    {
+        if (OnFacingChange != null) {
+            OnFacingChange(facing);
+        }
+    }
 
     public override void ReadInput(InputData data)
     {
@@ -44,6 +61,21 @@ public class walkingController : Controller
             jumpPressTime = Time.deltaTime;
         } else {
             jumpPressTime = 0f;
+        }
+
+        // check if interact button is presset
+        if (data.buttons[1] == true) {
+            if (OnInteract != null)
+            {
+                OnInteract(interactDuration, 0);
+            }
+        }
+        if (data.buttons[2] == true)
+        {
+            if (OnInteract != null)
+            {
+                OnInteract(interactDuration, attackDamage);
+            }
         }
         newInput = true;
     }
@@ -96,8 +128,10 @@ public class walkingController : Controller
         else { 
             facing = (dir.x > 0) ? FacingDirection.East : FacingDirection.West;
         }
-
-        Debug.Log(facing);
+        if (OnFacingChange != null) {
+            OnFacingChange(facing);
+        }
+        
     }
 
     private void ResetMovementtoZero()
