@@ -9,7 +9,12 @@ public class InputManager : MonoBehaviour
     [Range(0,20)]
     public int buttonCount;
 
-    public Controller controller;
+    private Controller controller;
+
+    public void Awake()
+    {
+        controller = GetComponent<Controller>();
+    }
 
     public void PassInput(InputData data) {
 

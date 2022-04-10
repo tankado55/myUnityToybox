@@ -39,35 +39,42 @@ public class keyboardTracker : deviceTracker
 
     void Update()
     {
-        for (int i = 0; i < buttonKeys.Length; i++) {
-            if (Input.GetKey(buttonKeys[i])) {
-                data.buttons[i] = true;
-                newData = true;
-            }
-        }
-
-        for (int i = 0; i < axisKeys.Length; i++)
+        if (isLocalPlayer)
         {
-            float val = 0f;
-            if (Input.GetKey(axisKeys[i].positive))
+            for (int i = 0; i < buttonKeys.Length; i++)
             {
-                val += 1f;
-                newData = true;
+                if (Input.GetKey(buttonKeys[i]))
+                {
+                    data.buttons[i] = true;
+                    newData = true;
+                }
             }
-            if (Input.GetKey(axisKeys[i].negative))
-            {
-                val -= 1f;
-                newData = true;
-            }
-            data.axes[i] = val;
-        }
 
-        if (newData) {
-            im.PassInput(data);
-            newData = false;
-            data.Reset();
+            for (int i = 0; i < axisKeys.Length; i++)
+            {
+                float val = 0f;
+                if (Input.GetKey(axisKeys[i].positive))
+                {
+                    val += 1f;
+                    newData = true;
+                }
+                if (Input.GetKey(axisKeys[i].negative))
+                {
+                    val -= 1f;
+                    newData = true;
+                }
+                data.axes[i] = val;
+            }
+
+            if (newData)
+            {
+                im.PassInput(data);
+                newData = false;
+                data.Reset();
+            }
         }
     }
+        
 }
 
 [System.Serializable]
