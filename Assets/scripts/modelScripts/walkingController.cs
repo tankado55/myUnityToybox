@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Mirror;
 
 public enum FacingDirection {
     North,
@@ -37,6 +38,11 @@ public class walkingController : Controller
         }
     }
 
+    private void Update()
+    {
+        
+    }
+
     public override void ReadInput(InputData data)
     {
         prevWalkVelocity = walkVelocity;
@@ -62,7 +68,6 @@ public class walkingController : Controller
         } else {
             jumpPressTime = 0f;
         }
-
         // check if interact button is presset
         if (data.buttons[1] == true) {
             if (OnInteract != null)
@@ -138,5 +143,17 @@ public class walkingController : Controller
     {
         walkVelocity = Vector3.zero;
         adjVerVelocity = 0f;
+    }
+
+    [Command]
+    void Hola()
+    {
+        Debug.Log("Hola from Client!");
+    }
+
+    [ClientRpc]
+    void TooRight()
+    {
+        Debug.Log("Too Right!");
     }
 }
